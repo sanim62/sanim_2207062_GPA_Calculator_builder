@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example._207062_gpa_calculator.CourseEntryController">
+
+    <center>
+        <ScrollPane fitToWidth="true">
+            <VBox alignment="TOP_CENTER" spacing="25">
+                <padding>
+                    <Insets top="35" right="35" bottom="35" left="35"/>
+                </padding>
+
+                <!-- Form Card -->
+                <VBox alignment="CENTER" spacing="12">
+                    <padding>
+                        <Insets top="25" right="25" bottom="25" left="25"/>
+                    </padding>
+
+                    <TextField fx:id="courseNameField" promptText="Course Name"/>
+                    <TextField fx:id="courseCodeField" promptText="Course Code"/>
+                    <TextField fx:id="creditField" promptText="Credit Hours"/>
+                    <TextField fx:id="teacherField" promptText="Teacher Name"/>
+
+                    <ComboBox fx:id="gradeCombo" promptText="Grade"/>
+
+                    <Button fx:id="addButton" text="Add Course" onAction="#handleAddCourse"
+                            prefWidth="180"/>
+                </VBox>
+
+                <!-- Course List Card -->
+                <VBox spacing="12">
+                    <padding>
+                        <Insets top="20" right="20" bottom="20" left="20"/>
+                    </padding>
+
+                    <Label text="Course List">
+                        <font>
+                            <Font name="Arial Bold" size="18"/>
+                        </font>
+                    </Label>
+
+                    <VBox fx:id="coursesDisplay" spacing="5"/>
+                </VBox>
+
+                <Label fx:id="creditLabel" text="Credits: 0 / 12"/>
+
+                <Button fx:id="calculateButton" text="Calculate GPA" onAction="#handleCalculateGPA"
+                        prefWidth="180" disable="true"/>
+            </VBox>
+        </ScrollPane>
+    </center>
+
+</BorderPane>

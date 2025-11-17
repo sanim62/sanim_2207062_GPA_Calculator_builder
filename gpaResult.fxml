@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example._207062_gpa_calculator.GPAResultController">
+
+    <center>
+        <ScrollPane fitToWidth="true">
+
+            <VBox alignment="TOP_CENTER" spacing="25">
+                <padding>
+                    <Insets top="35" right="35" bottom="35" left="35"/>
+                </padding>
+
+                <!-- GPA Card -->
+                <VBox alignment="CENTER" spacing="12">
+                    <padding>
+                        <Insets top="25" right="25" bottom="25" left="25"/>
+                    </padding>
+
+                    <Label text="Your GPA">
+                        <font><Font name="Arial" size="18"/></font>
+                    </Label>
+
+                    <Label fx:id="gpaLabel" text="0.00">
+                        <font><Font name="Arial Bold" size="42"/></font>
+                    </Label>
+
+                    <Label fx:id="creditLabel" text="Total Credits: 0">
+                        <font><Font name="Arial" size="15"/></font>
+                    </Label>
+                </VBox>
+
+                <!-- Course Table -->
+                <VBox spacing="12">
+                    <padding>
+                        <Insets top="20" right="20" bottom="20" left="20"/>
+                    </padding>
+
+                    <Label text="Course Details">
+                        <font><Font name="Arial Bold" size="18"/></font>
+                    </Label>
+
+                    <HBox spacing="15">
+                        <padding>
+                            <Insets top="8" right="8" bottom="8" left="8"/>
+                        </padding>
+
+                        <Label text="Name" prefWidth="150"/>
+                        <Label text="Code" prefWidth="80"/>
+                        <Label text="Credits" prefWidth="50"/>
+                        <Label text="Grade" prefWidth="50"/>
+                        <Label text="Points" prefWidth="50"/>
+                    </HBox>
+
+                    <VBox fx:id="courseList" spacing="5"/>
+                </VBox>
+
+                <Button fx:id="backButton" text="New Calculation" onAction="#handleBack"
+                        prefWidth="180" prefHeight="40"/>
+            </VBox>
+        </ScrollPane>
+    </center>
+
+</BorderPane>
