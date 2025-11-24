@@ -37,6 +37,7 @@ public class GPAResultController {
         for (Course course : courses) {
             HBox row = new HBox(15);
             row.setPadding(new Insets(8));
+            row.setStyle("-fx-background-color: #f9f9f9; -fx-background-radius: 3;");
 
             Label nameLabel = new Label(course.getCourseName());
             nameLabel.setPrefWidth(150);
@@ -73,6 +74,9 @@ public class GPAResultController {
     @FXML
     private void handleBack() {
         try {
+            // Clear the database for new calculation
+            DatabaseManager.clearAllCourses();
+
             FXMLLoader loader = new FXMLLoader(getClass().getResource("home.fxml"));
             Parent root = loader.load();
 

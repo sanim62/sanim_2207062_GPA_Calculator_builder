@@ -11,6 +11,8 @@ public class GPACalculatorApp extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
+            DatabaseManager.createTables();
+
             FXMLLoader loader = new FXMLLoader(getClass().getResource("home.fxml"));
             Parent root = loader.load();
 

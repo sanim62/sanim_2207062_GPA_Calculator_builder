@@ -1,3 +1,4 @@
+
 package com.example._207062_gpa_calculator;
 
 import javafx.fxml.FXML;
@@ -29,6 +30,7 @@ public class CourseEntryController implements Initializable {
     @FXML private VBox coursesDisplay;
 
     private List<Course> courses = new ArrayList<>();
+
     private int totalCreditsRequired = 12;
     private int currentCredits = 0;
 
@@ -46,26 +48,39 @@ public class CourseEntryController implements Initializable {
         String teacher = teacherField.getText().trim();
         String grade = gradeCombo.getValue();
 
-        // silently ignore incomplete or invalid inputs
+        // Show error message for incomplete inputs
         if (name.isEmpty() || code.isEmpty() || creditStr.isEmpty() ||
                 teacher.isEmpty() || grade == null) {
+            showAlert("Incomplete Information", "Please fill in all fields.");
             return;
         }
 
         try {
             int credit = Integer.parseInt(creditStr);
-            if (credit <= 0 || currentCredits + credit > totalCreditsRequired) {
-                return; // silently ignore if credit invalid or exceeds limit
+
+            if (credit <= 0) {
+                showAlert("Invalid Credit", "Credit hours must be greater than 0.");
+                return;
+            }
+
+            if (currentCredits + credit > totalCreditsRequired) {
+                showAlert("Credit Limit Exceeded",
+                        "Adding this course would exceed the " + totalCreditsRequired + " credit limit.\n" +
+                                "Current credits: " + currentCredits + "\n" +
+                                "Attempting to add: " + credit);
+                return;
             }
 
             Course course = new Course(name, code, credit, teacher, grade);
             courses.add(course);
+            DatabaseManager.insertCourse(course); // Fixed method name
+
             currentCredits += credit;
 
             addCourseToDisplay(course);
             creditLabel.setText("Credits: " + currentCredits + " / " + totalCreditsRequired);
 
-            // clear input fields
+            // Clear input fields
             courseNameField.clear();
             courseCodeField.clear();
             creditField.clear();
@@ -77,13 +92,14 @@ public class CourseEntryController implements Initializable {
             }
 
         } catch (NumberFormatException ex) {
-            // ignore silently
+            showAlert("Invalid Input", "Credit hours must be a valid number.");
         }
     }
 
     private void addCourseToDisplay(Course course) {
         HBox courseBox = new HBox(10);
         courseBox.setPadding(new Insets(8));
+        courseBox.setStyle("-fx-background-color: #f0f0f0; -fx-background-radius: 5;");
 
         Label info = new Label(course.getCourseCode() + " - " + course.getCourseName() +
                 " | " + course.getCourseCredit() + " credits | Grade: " + course.getGrade());
@@ -108,6 +124,15 @@ public class CourseEntryController implements Initializable {
 
         } catch (Exception e) {
             e.printStackTrace();
+            showAlert("Error", "Could not load GPA results screen.");
         }
+    }
+
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }
