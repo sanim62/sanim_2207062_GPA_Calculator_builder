@@ -22,17 +22,28 @@ public class GPAResultController {
 
     private List<Course> courses;
     private int totalCredits;
+    private String studentRoll = "2207062";
+
+    public void setCourses(List<Course> courses, int totalCredits, String roll) {
+        this.courses = courses;
+        this.totalCredits = totalCredits;
+        this.studentRoll = roll != null ? roll : "2207062";
+        displayResults();
+    }
 
     public void setCourses(List<Course> courses, int totalCredits) {
         this.courses = courses;
         this.totalCredits = totalCredits;
+        this.studentRoll = "2207062";
         displayResults();
     }
 
     private void displayResults() {
         double gpa = calculateGPA();
-        gpaLabel.setText(String.format("%.2f", gpa));
-        creditLabel.setText("Total Credits: " + totalCredits);
+        gpaLabel.setText(String.format("GPA: %.2f", gpa));
+        creditLabel.setText("Total Credits: " + totalCredits + " | Roll: " + studentRoll);
+
+        courseList.getChildren().clear();
 
         for (Course course : courses) {
             HBox row = new HBox(15);
@@ -40,21 +51,21 @@ public class GPAResultController {
             row.setStyle("-fx-background-color: #f9f9f9; -fx-background-radius: 3;");
 
             Label nameLabel = new Label(course.getCourseName());
-            nameLabel.setPrefWidth(150);
+            nameLabel.setPrefWidth(200);
 
             Label codeLabel = new Label(course.getCourseCode());
             codeLabel.setPrefWidth(80);
 
-            Label creditLabel = new Label(course.getCourseCredit() + " cr");
-            creditLabel.setPrefWidth(50);
+            Label creditLabelItem = new Label(course.getCourseCredit() + " cr");
+            creditLabelItem.setPrefWidth(60);
 
             Label gradeLabel = new Label(course.getGrade());
-            gradeLabel.setPrefWidth(50);
+            gradeLabel.setPrefWidth(60);
 
             Label pointsLabel = new Label(String.format("%.2f", course.getGradePoint()));
-            pointsLabel.setPrefWidth(50);
+            pointsLabel.setPrefWidth(60);
 
-            row.getChildren().addAll(nameLabel, codeLabel, creditLabel, gradeLabel, pointsLabel);
+            row.getChildren().addAll(nameLabel, codeLabel, creditLabelItem, gradeLabel, pointsLabel);
             courseList.getChildren().add(row);
         }
     }
@@ -74,17 +85,18 @@ public class GPAResultController {
     @FXML
     private void handleBack() {
         try {
-            // Clear the database for new calculation
-            DatabaseManager.clearAllCourses();
+            if (courses != null && !courses.isEmpty()) {
+                double gpa = calculateGPA();
+                DatabaseManager.saveStudentResult(studentRoll, gpa, totalCredits, "Fall 2025");
+            }
+
+            DatabaseManager.clearCoursesByRoll(studentRoll);
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("home.fxml"));
             Parent root = loader.load();
-
             Scene scene = new Scene(root, 800, 500);
-
             Stage stage = (Stage) backButton.getScene().getWindow();
             stage.setScene(scene);
-
         } catch (Exception e) {
             e.printStackTrace();
         }

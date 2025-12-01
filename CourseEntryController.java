@@ -19,6 +19,7 @@ import java.util.ResourceBundle;
 
 public class CourseEntryController implements Initializable {
 
+    @FXML private TextField rollField;
     @FXML private TextField courseNameField;
     @FXML private TextField courseCodeField;
     @FXML private TextField creditField;
@@ -30,7 +31,6 @@ public class CourseEntryController implements Initializable {
     @FXML private VBox coursesDisplay;
 
     private List<Course> courses = new ArrayList<>();
-
     private int totalCreditsRequired = 12;
     private int currentCredits = 0;
 
@@ -38,20 +38,21 @@ public class CourseEntryController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         gradeCombo.getItems().addAll("A+", "A", "A-", "B+", "B", "B-",
                 "C+", "C", "C-", "D+", "D", "F");
+        calculateButton.setDisable(true);
     }
 
     @FXML
     private void handleAddCourse() {
+        String roll = rollField.getText().trim();
         String name = courseNameField.getText().trim();
         String code = courseCodeField.getText().trim();
         String creditStr = creditField.getText().trim();
         String teacher = teacherField.getText().trim();
         String grade = gradeCombo.getValue();
 
-        // Show error message for incomplete inputs
-        if (name.isEmpty() || code.isEmpty() || creditStr.isEmpty() ||
+        if (roll.isEmpty() || name.isEmpty() || code.isEmpty() || creditStr.isEmpty() ||
                 teacher.isEmpty() || grade == null) {
-            showAlert("Incomplete Information", "Please fill in all fields.");
+            showAlert("Incomplete Information", "Please fill in all fields including Roll No.");
             return;
         }
 
@@ -73,14 +74,12 @@ public class CourseEntryController implements Initializable {
 
             Course course = new Course(name, code, credit, teacher, grade);
             courses.add(course);
-            DatabaseManager.insertCourse(course); // Fixed method name
+            DatabaseManager.insertCourse(course, roll);
 
             currentCredits += credit;
-
             addCourseToDisplay(course);
             creditLabel.setText("Credits: " + currentCredits + " / " + totalCreditsRequired);
 
-            // Clear input fields
             courseNameField.clear();
             courseCodeField.clear();
             creditField.clear();
@@ -115,10 +114,9 @@ public class CourseEntryController implements Initializable {
             Parent root = loader.load();
 
             GPAResultController controller = loader.getController();
-            controller.setCourses(courses, currentCredits);
+            controller.setCourses(courses, currentCredits, rollField.getText().trim());
 
             Scene scene = new Scene(root, 800, 600);
-
             Stage stage = (Stage) calculateButton.getScene().getWindow();
             stage.setScene(scene);
 
